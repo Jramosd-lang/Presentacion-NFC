@@ -690,45 +690,72 @@
     const activeType = document.querySelector(".wtype-btn.active");
     const wtype = activeType ? activeType.dataset.wtype : "url";
 
+    // Limpiar estado anterior SIEMPRE antes de nuevo intento
     resetWriteLog();
     writeBtn.disabled = true;
-    writeBtn.textContent = "Esperando etiqueta…";
+    writeBtn.textContent = "Acerca el tag…";
 
-    labAddLine(writeLog, "NDEFReader en modo escritura inicializado…");
-    labAddLine(writeLog, "Tipo: " + wtype.toUpperCase() + " · " + content.length + " chars · acerca la etiqueta…");
+    const bytes = new TextEncoder().encode(content).length;
+    labAddLine(writeLog, "NDEFReader write inicializado…");
+    labAddLine(writeLog, "Tipo: " + wtype.toUpperCase() + " · " + bytes + " bytes · mantén el tag fijo hasta confirmar");
 
+    const writeAbort = new AbortController();
+    // Timeout 20s — abortar si usuario no acerca tag
+    const timeout = setTimeout(() => writeAbort.abort(), 20000);
+
+    let written = false;
     try {
       const writer = new NDEFReader();
       const record = wtype === "url"
         ? { recordType: "url",  data: content }
         : { recordType: "text", data: content, lang: "es" };
 
-      await writer.write({ records: [record] });
-
-      labAddLine(writeLog, "¡Escrito correctamente en la etiqueta NFC!", "ok");
-      const bytes = new TextEncoder().encode(content).length;
-      labAddLine(writeLog, "Bytes escritos: " + bytes + " · TNF: 0x01 Well-Known · SR=1", "ok");
-
-      if (writeTagCap) writeTagCap.textContent = bytes + " bytes escritos";
-      if (writeResult) {
-        writeResult.hidden = false;
-        if (writeResultTxt) writeResultTxt.textContent = "Escrito: " + content.substring(0, 40) + (content.length > 40 ? "…" : "");
-      }
-      writeBtn.disabled = false;
-      writeBtn.textContent = "Escribir de nuevo ↻";
+      await writer.write({ records: [record] }, { signal: writeAbort.signal });
+      written = true;
 
     } catch (err) {
       const name = (err && err.name) || "Error";
-      const msgs = {
-        NotAllowedError:   "Permiso denegado. Activa NFC y recarga.",
-        NotSupportedError: "NFC no disponible o desactivado.",
-        SecurityError:     "Requiere HTTPS o localhost.",
-        NotReadableError:  "La etiqueta es de solo lectura o incompatible."
-      };
-      labAddLine(writeLog, msgs[name] || "Error al escribir (" + name + ")", "err");
-      writeBtn.disabled = false;
-      writeBtn.textContent = "Reintentar ✎";
+
+      // AbortError: puede ser timeout propio O éxito real con sesión cerrada por Android
+      if (name === "AbortError") {
+        if (written) {
+          // Nada — éxito manejado abajo
+        } else {
+          // Timeout o tag retirado antes de escribir
+          labAddLine(writeLog, "Tag retirado demasiado pronto o sin tag detectado — mantén el tag fijo hasta ver confirmación.", "err");
+          writeBtn.disabled = false;
+          writeBtn.textContent = "Reintentar ✎";
+          clearTimeout(timeout);
+          return;
+        }
+      } else {
+        const msgs = {
+          NotAllowedError:   "Permiso denegado — activa NFC y recarga.",
+          NotSupportedError: "NFC no disponible o desactivado.",
+          SecurityError:     "Requiere HTTPS o localhost.",
+          NotReadableError:  "Tag de solo lectura o formato incompatible (usa NTAG213/215/216).",
+        };
+        labAddLine(writeLog, msgs[name] || "Error al escribir (" + name + ")", "err");
+        writeBtn.disabled = false;
+        writeBtn.textContent = "Reintentar ✎";
+        clearTimeout(timeout);
+        return;
+      }
     }
+
+    clearTimeout(timeout);
+
+    // Confirmar éxito
+    labAddLine(writeLog, "¡Escrito en tag NFC!", "ok");
+    labAddLine(writeLog, bytes + " bytes · TNF 0x01 Well-Known · SR=1 · tipo " + wtype.toUpperCase(), "ok");
+    if (writeTagCap) writeTagCap.textContent = bytes + " bytes escritos";
+    if (writeResult) {
+      writeResult.hidden = false;
+      if (writeResultTxt)
+        writeResultTxt.textContent = "✓ " + content.substring(0, 48) + (content.length > 48 ? "…" : "");
+    }
+    writeBtn.disabled = false;
+    writeBtn.textContent = "Escribir de nuevo ↻";
   }
 
   if (writeBtn) writeBtn.addEventListener("click", writeToTag);
