@@ -1,0 +1,981 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>NFC · Cómo funciona desde adentro — Programación Móvil</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400..800&family=Spline+Sans:wght@400;500;600&family=Spline+Sans+Mono:wght@400;500;600&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="css/styles.css" />
+</head>
+<body>
+
+<div class="bg-grid" aria-hidden="true"></div>
+<div class="bg-glow" aria-hidden="true"></div>
+<div class="bg-noise" aria-hidden="true"></div>
+<div class="progress" aria-hidden="true"><span id="progressBar"></span></div>
+
+<main class="deck" id="deck">
+
+  <!-- ============ SLIDE 1 · PORTADA ============ -->
+  <section class="slide cover active" data-title="Portada">
+    <div class="cover-aura" aria-hidden="true">
+      <span class="ring r1"></span><span class="ring r2"></span>
+      <span class="ring r3"></span><span class="ring r4"></span>
+      <div class="cover-chip">
+        <svg viewBox="0 0 24 24" width="38" height="38" fill="none" stroke="currentColor" stroke-width="1.6">
+          <path d="M5 3a14 14 0 0 1 0 18M9 6a8 8 0 0 1 0 12M13 9a3 3 0 0 1 0 6"/>
+        </svg>
+      </div>
+    </div>
+    <div class="cover-body">
+      <p class="kicker" data-anim style="--d:1">Programación Móvil · Exposición</p>
+      <h1 class="cover-title" data-anim style="--d:2">
+        <span>Near Field</span><span class="accent">Communication</span>
+      </h1>
+      <p class="lead" data-anim style="--d:3">
+        Historia, física, protocolos ISO, formato NDEF, librerías Flutter/Dart
+        y una demostración práctica interactiva.
+      </p>
+      <div class="cover-meta" data-anim style="--d:4">
+        <div class="meta-block">
+          <span class="meta-label">Integrantes</span>
+          <ul class="members">
+            <li>José Felipe Quintero</li>
+            <li>Maria Isabel Gracia Moscoso</li>
+            <li>Betsy Liliana Nieves</li>
+            <li>Laura Vanesa Rangel</li>
+            <li>Jeferson de la Rosa</li>
+          </ul>
+        </div>
+        <div class="meta-block">
+          <span class="meta-label">Materia</span>
+          <p class="meta-strong">Programación Móvil</p>
+          <span class="meta-label">Profesor</span>
+          <p class="meta-strong">Ronald Alexander Vacca Ascanio</p>
+          <span class="meta-label">Institución</span>
+          <p class="meta-strong">Universidad Popular del Cesar</p>
+        </div>
+      </div>
+      <p class="cover-hint" data-anim style="--d:5">
+        Usa <kbd>→</kbd> <kbd>←</kbd> o las flechas en pantalla para navegar
+      </p>
+    </div>
+  </section>
+
+  <!-- ============ SLIDE 2 · ¿QUÉ ES NFC? ============ -->
+  <section class="slide" data-title="¿Qué es NFC?">
+    <div class="slide-inner">
+      <p class="kicker" data-anim style="--d:1">01 — Concepto</p>
+      <h2 data-anim style="--d:2">¿Qué es el <span class="accent">NFC</span>?</h2>
+      <p class="lead narrow" data-anim style="--d:3">
+        Una tecnología de comunicación inalámbrica de <strong>muy corto alcance</strong>
+        que permite intercambiar datos entre dos dispositivos con solo acercarlos.
+      </p>
+      <div class="stat-row">
+        <div class="stat" data-anim style="--d:4">
+          <span class="stat-num">13.56<small>MHz</small></span>
+          <span class="stat-desc">Frecuencia de radio estándar (banda HF, ISM)</span>
+        </div>
+        <div class="stat" data-anim style="--d:5">
+          <span class="stat-num">≤ 4<small>cm</small></span>
+          <span class="stat-desc">Alcance efectivo: requiere proximidad física deliberada</span>
+        </div>
+        <div class="stat" data-anim style="--d:6">
+          <span class="stat-num">424<small>kbps</small></span>
+          <span class="stat-desc">Velocidad típica (máx. 848 kbps en ISO 14443)</span>
+        </div>
+        <div class="stat" data-anim style="--d:7">
+          <span class="stat-num">&lt;0.1<small>seg</small></span>
+          <span class="stat-desc">Tiempo de establecimiento del enlace RF</span>
+        </div>
+      </div>
+      <p class="footnote" data-anim style="--d:8">
+        Es una evolución del RFID. La diferencia clave: el NFC permite comunicación
+        <strong>bidireccional</strong> y un dispositivo puede actuar simultáneamente como lector o como etiqueta (HCE).
+      </p>
+    </div>
+  </section>
+
+  <!-- ============ SLIDE 3 · HISTORIA NFC ============ -->
+  <section class="slide" data-title="Historia NFC">
+    <div class="slide-inner">
+      <p class="kicker" data-anim style="--d:1">02 — Historia</p>
+      <h2 data-anim style="--d:2">De RFID al <span class="accent">bolsillo</span></h2>
+      <p class="lead narrow" data-anim style="--d:3">
+        El NFC es la evolución de décadas de investigación en radiofrecuencia de campo cercano y tarjetas inteligentes sin contacto.
+      </p>
+      <div class="timeline" data-anim style="--d:4">
+        <div class="tl-item">
+          <span class="tl-year">1983</span>
+          <div class="tl-dot"></div>
+          <p class="tl-text"><strong>RFID patentado</strong> — Charles Walton obtiene la primera patente US4384288 para un sistema de acceso sin contacto por inducción magnética.</p>
+        </div>
+        <div class="tl-item">
+          <span class="tl-year">1994</span>
+          <div class="tl-dot"></div>
+          <p class="tl-text"><strong>ISO 14443</strong> — Se publica el estándar para tarjetas de proximidad (PICC) que define Type A y Type B. Base física del NFC moderno.</p>
+        </div>
+        <div class="tl-item">
+          <span class="tl-year">2002</span>
+          <div class="tl-dot accent-dot"></div>
+          <p class="tl-text"><strong>Nace el estándar NFC</strong> — Sony y Philips (NXP) crean conjuntamente la especificación, fusionando FeliCa con ISO 14443 en una sola interfaz.</p>
+        </div>
+        <div class="tl-item">
+          <span class="tl-year">2004</span>
+          <div class="tl-dot accent-dot"></div>
+          <p class="tl-text"><strong>NFC Forum</strong> — Nokia, Sony y Philips fundan el consorcio. Publican NDEF, RTD y las especificaciones de Tag Types 1–4.</p>
+        </div>
+        <div class="tl-item">
+          <span class="tl-year">2010</span>
+          <div class="tl-dot"></div>
+          <p class="tl-text"><strong>Samsung Nexus S</strong> — Primer smartphone Android con chip NFC integrado. Google habilita la API NFC pública en Android 2.3 Gingerbread.</p>
+        </div>
+        <div class="tl-item">
+          <span class="tl-year">2011</span>
+          <div class="tl-dot"></div>
+          <p class="tl-text"><strong>Google Wallet</strong> — Primer monedero digital NFC masivo. Introduce HCE (Host Card Emulation) en Android 4.4 KitKat.</p>
+        </div>
+        <div class="tl-item">
+          <span class="tl-year">2014</span>
+          <div class="tl-dot accent-dot"></div>
+          <p class="tl-text"><strong>Apple Pay (iPhone 6)</strong> — Apple integra NFC pero solo para pagos vía Secure Element. El acceso general a apps de terceros queda bloqueado.</p>
+        </div>
+        <div class="tl-item">
+          <span class="tl-year">2019</span>
+          <div class="tl-dot"></div>
+          <p class="tl-text"><strong>CoreNFC abierto</strong> — iOS 13 permite lectura de tags ISO 15693 y escritura NDEF desde apps de terceros. Entitlement obligatorio.</p>
+        </div>
+        <div class="tl-item">
+          <span class="tl-year">2020</span>
+          <div class="tl-dot accent-dot"></div>
+          <p class="tl-text"><strong>Web NFC API</strong> — Chrome 89 para Android implementa <code>NDEFReader</code>, llevando NFC al navegador sin instalar app nativa.</p>
+        </div>
+        <div class="tl-item">
+          <span class="tl-year">2023</span>
+          <div class="tl-dot"></div>
+          <p class="tl-text"><strong>ICAO 9303</strong> — Los pasaportes electrónicos globales usan NFC con BAC/PACE y cifrado AES-128 para leer el chip biométrico de forma segura.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ SLIDE 4 · FÍSICA INTERNA ============ -->
+  <section class="slide" data-title="Cómo funciona por dentro">
+    <div class="slide-inner split">
+      <div class="split-text">
+        <p class="kicker" data-anim style="--d:1">03 — Funcionamiento interno</p>
+        <h2 data-anim style="--d:2">La física detrás del <span class="accent">"tap"</span></h2>
+        <p class="lead" data-anim style="--d:3">
+          El NFC no transmite ondas de radio "al aire": funciona por
+          <strong>acoplamiento inductivo</strong> mutuo entre bobinas.
+        </p>
+        <ol class="steps">
+          <li data-anim style="--d:4">
+            <span class="step-n">1</span>
+            <div><strong>Campo magnético oscilante</strong><p>El lector hace circular corriente alterna por su antena (bobina L) y genera un campo magnético a 13.56 MHz. Potencia típica: 200 mW.</p></div>
+          </li>
+          <li data-anim style="--d:5">
+            <span class="step-n">2</span>
+            <div><strong>Inducción electromagnética</strong><p>Al acercar la etiqueta, ese campo induce una FEM en su bobina receptora (Ley de Faraday). Así la etiqueta pasiva se <em>energiza sin batería</em>; obtiene ~5–15 mW.</p></div>
+          </li>
+          <li data-anim style="--d:6">
+            <span class="step-n">3</span>
+            <div><strong>Modulación de carga (Load Modulation)</strong><p>La etiqueta responde variando la impedancia de su antena a una subportadora de 847.5 kHz. El lector detecta esos cambios en su propia tensión y los decodifica como bits.</p></div>
+          </li>
+        </ol>
+      </div>
+      <div class="split-visual" data-anim style="--d:4">
+        <div class="coil-scene">
+          <div class="coil coil-reader">
+            <span class="coil-label">Lector</span>
+            <svg viewBox="0 0 80 80"><circle cx="40" cy="40" r="30"/><circle cx="40" cy="40" r="21"/><circle cx="40" cy="40" r="12"/></svg>
+          </div>
+          <div class="field-lines" aria-hidden="true">
+            <span></span><span></span><span></span><span></span>
+          </div>
+          <div class="coil coil-tag">
+            <span class="coil-label">Etiqueta</span>
+            <svg viewBox="0 0 80 80"><circle cx="40" cy="40" r="30"/><circle cx="40" cy="40" r="21"/><circle cx="40" cy="40" r="12"/></svg>
+          </div>
+          <div class="energy-flow" aria-hidden="true"></div>
+        </div>
+        <p class="caption">Acoplamiento inductivo — Ley de Faraday a 13.56 MHz</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ SLIDE 5 · STACK DE PROTOCOLOS ============ -->
+  <section class="slide" data-title="Stack de protocolos">
+    <div class="slide-inner split">
+      <div class="split-text">
+        <p class="kicker" data-anim style="--d:1">04 — Técnica profunda</p>
+        <h2 data-anim style="--d:2">Stack de <span class="accent">protocolos</span></h2>
+        <p class="lead" data-anim style="--d:3">
+          NFC no es un solo estándar: es una pila de normas ISO que operan en capas bien definidas.
+        </p>
+        <div class="iso-grid" data-anim style="--d:4">
+          <div class="iso-row">
+            <span class="iso-badge">ISO 14443</span>
+            <span>Tarjetas de proximidad. <strong>Type A</strong>: ASK 100% / Miller modificado / anticolisión bitwise. <strong>Type B</strong>: ASK 10% / NRZ-L / anticolisión por slot. Hasta 848 kbps.</span>
+          </div>
+          <div class="iso-row">
+            <span class="iso-badge">ISO 18092</span>
+            <span>NFCIP-1. Modo Peer-to-Peer activo y pasivo. Velocidades: 106, 212, 424 kbps. Define el handshake ATR_REQ / ATR_RES.</span>
+          </div>
+          <div class="iso-row">
+            <span class="iso-badge">ISO 15693</span>
+            <span>Tarjetas de vecindad pasivas. Alcance hasta 1 m. Modulación ASK 10%/100%. Anticolisión RFID por ranura (16 slots). Tag Type 5.</span>
+          </div>
+          <div class="iso-row">
+            <span class="iso-badge">ISO 7816-4</span>
+            <span>Capa de aplicación APDU. Comando: <code>CLA INS P1 P2 [Lc Data] [Le]</code>. Respuesta: <code>Data SW1 SW2</code>. Usado en DESFire, HCE y pasaportes.</span>
+          </div>
+        </div>
+        <div class="mod-info" data-anim style="--d:5">
+          <span class="mod-label">Modulaciones:</span>
+          Type A — ASK 100% · Miller · anticolisión bitwise (UID 4/7/10 bytes) ·
+          Type B — ASK 10% · NRZ-L · anticolisión por N slots
+        </div>
+      </div>
+      <div class="split-visual" data-anim style="--d:3">
+        <div class="proto-stack">
+          <div class="proto-layer l-app">
+            <span class="pl-name">Aplicación</span>
+            <span class="pl-note">NDEF · Smart Poster · APDU ISO 7816</span>
+          </div>
+          <div class="proto-layer l-ndef">
+            <span class="pl-name">NDEF / RTD</span>
+            <span class="pl-note">NFC Forum — Message · Record · Payload</span>
+          </div>
+          <div class="proto-layer l-dep">
+            <span class="pl-name">ISO-DEP</span>
+            <span class="pl-note">ISO 14443-4 — Activación T=CL · I-Block · R-Block</span>
+          </div>
+          <div class="proto-layer l-mac">
+            <span class="pl-name">MAC / Anti-colisión</span>
+            <span class="pl-note">ISO 14443-3 — UID · SAK · ATQA · CRC_A/B</span>
+          </div>
+          <div class="proto-layer l-phy">
+            <span class="pl-name">PHY</span>
+            <span class="pl-note">13.56 MHz · ASK · ISO 14443-2 · Miller / NRZ-L</span>
+          </div>
+        </div>
+        <div class="tag-types" data-anim style="--d:5">
+          <span class="tag-chip t1">T1 · Topaz</span>
+          <span class="tag-chip t2">T2 · Ultralight</span>
+          <span class="tag-chip t3">T3 · FeliCa</span>
+          <span class="tag-chip t4">T4 · DESFire</span>
+          <span class="tag-chip t5">T5 · ISO15693</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ SLIDE 6 · COMPONENTES ============ -->
+  <section class="slide" data-title="Componentes">
+    <div class="slide-inner">
+      <p class="kicker" data-anim style="--d:1">05 — Anatomía</p>
+      <h2 data-anim style="--d:2">¿Qué hay <span class="accent">dentro</span>?</h2>
+      <p class="lead narrow" data-anim style="--d:3">
+        Una etiqueta NFC es asombrosamente simple: solo dos piezas y ninguna batería.
+      </p>
+      <div class="card-grid c2">
+        <article class="card" data-anim style="--d:4">
+          <span class="card-icon">⌾</span>
+          <h3>Antena de bobina</h3>
+          <p>Un fino hilo de cobre o aluminio enrollado en espiral (tipicamente 3–6 vueltas). Capta el campo del lector, lo convierte en energía y actúa como canal de comunicación bidireccional.</p>
+        </article>
+        <article class="card" data-anim style="--d:5">
+          <span class="card-icon">▣</span>
+          <h3>Microchip (IC)</h3>
+          <p>Almacena los datos en EEPROM (96 B–32 KB según tipo), gestiona el protocolo y ejecuta la lógica de anticolisión. En etiquetas pasivas toda su energía proviene de la inducción.</p>
+        </article>
+      </div>
+      <div class="callout" data-anim style="--d:6">
+        <strong>Pasivo vs. Activo.</strong> La <em>etiqueta</em> (tarjeta, sticker, implante) es pasiva: sin fuente propia.
+        El <em>teléfono</em> es activo: alimenta al lector NFC y — cuando hace falta — energiza a la etiqueta por inducción.
+        El teléfono siempre inicia la comunicación y controla el campo RF.
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ SLIDE 7 · MODOS DE OPERACIÓN ============ -->
+  <section class="slide" data-title="Modos de operación">
+    <div class="slide-inner">
+      <p class="kicker" data-anim style="--d:1">06 — Modos de operación</p>
+      <h2 data-anim style="--d:2">Tres formas de <span class="accent">usar</span> el NFC</h2>
+      <p class="lead narrow" data-anim style="--d:3">Haz clic en cada modo para ver cómo se comporta el dispositivo.</p>
+      <div class="modes" data-anim style="--d:4">
+        <div class="mode-tabs">
+          <button class="mode-tab active" data-mode="0">Lectura / Escritura</button>
+          <button class="mode-tab" data-mode="1">Peer-to-Peer</button>
+          <button class="mode-tab" data-mode="2">Emulación de tarjeta</button>
+        </div>
+        <div class="mode-stage">
+          <div class="mode-panel active" data-panel="0">
+            <div class="mode-diagram">
+              <span class="node phone">📱</span>
+              <span class="link"><i></i><i></i><i></i></span>
+              <span class="node tag">🏷️</span>
+            </div>
+            <div class="mode-info">
+              <h3>Lectura / Escritura</h3>
+              <p>El teléfono actúa como lector PCD (Proximity Coupling Device) y la etiqueta como PICC (Proximity Integrated Circuit Card). Lee o graba datos en tags pasivos. Caso más común: posters inteligentes, tarjetas de información, inventario.</p>
+            </div>
+          </div>
+          <div class="mode-panel" data-panel="1">
+            <div class="mode-diagram">
+              <span class="node phone">📱</span>
+              <span class="link two"><i></i><i></i><i></i></span>
+              <span class="node phone">📱</span>
+            </div>
+            <div class="mode-info">
+              <h3>Peer-to-Peer (P2P / NFCIP-1)</h3>
+              <p>Dos dispositivos activos intercambian datos bajo ISO 18092. El protocolo LLCP (Logical Link Control) proporciona control de flujo. Usado para intercambiar contactos, URLs, o iniciar emparejamiento Bluetooth/Wi-Fi.</p>
+            </div>
+          </div>
+          <div class="mode-panel" data-panel="2">
+            <div class="mode-diagram">
+              <span class="node tag">📱</span>
+              <span class="link"><i></i><i></i><i></i></span>
+              <span class="node phone">🖥️</span>
+            </div>
+            <div class="mode-info">
+              <h3>Emulación de tarjeta (HCE)</h3>
+              <p>El teléfono simula ser una tarjeta sin contacto ante un terminal externo. <em>Host Card Emulation</em> (Android 4.4+) gestiona los APDU commands en software. El Secure Element (SE) se usa para mayor seguridad en pagos.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ SLIDE 8 · NDEF BÁSICO ============ -->
+  <section class="slide" data-title="Formato NDEF">
+    <div class="slide-inner split">
+      <div class="split-text">
+        <p class="kicker" data-anim style="--d:1">07 — Estructura de datos</p>
+        <h2 data-anim style="--d:2">El formato <span class="accent">NDEF</span></h2>
+        <p class="lead" data-anim style="--d:3">
+          <strong>NDEF</strong> (NFC Data Exchange Format) es el "idioma" estándar del NFC Forum.
+          Un mensaje NDEF agrupa uno o varios <strong>registros</strong> concatenados.
+        </p>
+        <ul class="bullets">
+          <li data-anim style="--d:4"><strong>TNF</strong> — Type Name Format: indica la familia del contenido (Well-Known, MIME, External…).</li>
+          <li data-anim style="--d:5"><strong>Type</strong> — tipo concreto del registro, p. ej. <code>U</code> (URI), <code>T</code> (Text), <code>Sp</code> (Smart Poster).</li>
+          <li data-anim style="--d:6"><strong>ID</strong> — identificador opcional del registro (campo variable, presente si IL=1).</li>
+          <li data-anim style="--d:7"><strong>Payload</strong> — los datos reales. Longitud en 1 byte (SR) o 4 bytes (registro largo).</li>
+        </ul>
+      </div>
+      <div class="split-visual" data-anim style="--d:4">
+        <div class="ndef-card">
+          <header>NDEF Message</header>
+          <div class="ndef-rec">
+            <div class="rec-row"><span>TNF</span><b>0x01 · Well-Known</b></div>
+            <div class="rec-row"><span>Type</span><b>"U" (URI)</b></div>
+            <div class="rec-row"><span>ID</span><b>— (IL=0)</b></div>
+            <div class="rec-row payload"><span>Payload</span><b>https://www.unicesar.edu.co</b></div>
+          </div>
+          <footer>1 registro · 32 bytes · SR=1 (Short Record)</footer>
+        </div>
+        <p class="caption">Registro NDEF tipo URI — estructura simplificada</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ SLIDE 9 · NDEF PROFUNDO ============ -->
+  <section class="slide" data-title="NDEF profundo">
+    <div class="slide-inner split">
+      <div class="split-text">
+        <p class="kicker" data-anim style="--d:1">08 — NDEF a nivel de bits</p>
+        <h2 data-anim style="--d:2">Byte a <span class="accent">byte</span></h2>
+        <p class="lead" data-anim style="--d:3">
+          El primer byte de cada registro NDEF empaqueta 6 flags de control y el TNF en 3 bits.
+        </p>
+        <div class="bit-field" data-anim style="--d:4">
+          <div class="bit-header">
+            <span class="bit-b b-mb">MB</span>
+            <span class="bit-b b-me">ME</span>
+            <span class="bit-b b-cf">CF</span>
+            <span class="bit-b b-sr">SR</span>
+            <span class="bit-b b-il">IL</span>
+            <span class="bit-b b-tnf">T</span>
+            <span class="bit-b b-tnf">N</span>
+            <span class="bit-b b-tnf">F</span>
+          </div>
+          <div class="bit-desc">← bit 7 · · · · · · · bit 0 →</div>
+          <div class="bit-legend">
+            <span class="bl-row"><b class="c-mb">MB</b> Message Begin — primer registro del mensaje</span>
+            <span class="bl-row"><b class="c-me">ME</b> Message End — último registro del mensaje</span>
+            <span class="bl-row"><b class="c-cf">CF</b> Chunk Flag — registro fragmentado en chunks</span>
+            <span class="bl-row"><b class="c-sr">SR</b> Short Record — payload_length en 1 byte (≤255 B)</span>
+            <span class="bl-row"><b class="c-il">IL</b> ID Length — el campo ID está presente</span>
+            <span class="bl-row"><b class="c-tnf">TNF</b> Type Name Format — 3 bits (0x00–0x07)</span>
+          </div>
+        </div>
+        <div class="tnf-table" data-anim style="--d:5">
+          <div class="tnf-row hdr"><span>TNF</span><span>Significado</span></div>
+          <div class="tnf-row"><span>0x00</span><span>Empty — sin tipo ni payload</span></div>
+          <div class="tnf-row hi"><span>0x01</span><span>Well-Known (T=Text, U=URI, Sp=SmartPoster)</span></div>
+          <div class="tnf-row"><span>0x02</span><span>MIME media type (image/png, application/json…)</span></div>
+          <div class="tnf-row"><span>0x03</span><span>Absolute URI</span></div>
+          <div class="tnf-row"><span>0x04</span><span>External type (dominio:tipo personalizado)</span></div>
+          <div class="tnf-row"><span>0x05</span><span>Unknown — tipo desconocido</span></div>
+          <div class="tnf-row"><span>0x06</span><span>Unchanged — chunk intermedio</span></div>
+        </div>
+      </div>
+      <div class="split-visual" data-anim style="--d:4">
+        <div class="hex-dump">
+          <div class="hex-head">Volcado hex — URI record "https://unicesar.edu.co"</div>
+          <div class="hex-body">
+            <div class="hex-row">
+              <span class="hex-off">00</span>
+              <span class="hex-b b-hdr" title="MB=1 ME=1 CF=0 SR=1 IL=0 TNF=01">D1</span>
+              <span class="hex-b b-tlen" title="TYPE_LENGTH = 1 byte">01</span>
+              <span class="hex-b b-plen" title="PAYLOAD_LENGTH = 26 bytes">1A</span>
+              <span class="hex-b b-type" title="Type = 'U' (0x55)">55</span>
+              <span class="hex-b b-pay" title="URI prefix: 0x04 = 'https://'">04</span>
+              <span class="hex-b b-pay">75</span>
+              <span class="hex-b b-pay">6E</span>
+              <span class="hex-b b-pay">69</span>
+            </div>
+            <div class="hex-row">
+              <span class="hex-off">08</span>
+              <span class="hex-b b-pay">63</span>
+              <span class="hex-b b-pay">65</span>
+              <span class="hex-b b-pay">73</span>
+              <span class="hex-b b-pay">61</span>
+              <span class="hex-b b-pay">72</span>
+              <span class="hex-b b-pay">2E</span>
+              <span class="hex-b b-pay">65</span>
+              <span class="hex-b b-pay">64</span>
+            </div>
+            <div class="hex-row">
+              <span class="hex-off">10</span>
+              <span class="hex-b b-pay">75</span>
+              <span class="hex-b b-pay">2E</span>
+              <span class="hex-b b-pay">63</span>
+              <span class="hex-b b-pay">6F</span>
+              <span class="hex-b b-crc">EF</span>
+              <span class="hex-b b-crc">3A</span>
+              <span class="hex-b b-pad">—</span>
+              <span class="hex-b b-pad">—</span>
+            </div>
+          </div>
+          <div class="hex-legend">
+            <span class="hl-item b-hdr">D1 = Header byte (MB ME SR TNF:01)</span>
+            <span class="hl-item b-type">55 = "U" (URI record type)</span>
+            <span class="hl-item b-pay">Payload (0x04 + "unicesar.edu.co")</span>
+            <span class="hl-item b-crc">CRC_A (2 bytes)</span>
+          </div>
+        </div>
+        <div class="uri-prefix" data-anim style="--d:6">
+          <span class="up-title">Tabla de prefijos URI (RFC 5870)</span>
+          <div class="up-grid">
+            <span class="ug-code">0x00</span><span>sin prefijo</span>
+            <span class="ug-code">0x01</span><span>http://www.</span>
+            <span class="ug-code">0x02</span><span>https://www.</span>
+            <span class="ug-code">0x03</span><span>http://</span>
+            <span class="ug-code">0x04</span><span>https://</span>
+            <span class="ug-code">0x05</span><span>tel:</span>
+            <span class="ug-code">0x06</span><span>mailto:</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ SLIDE 10 · FLUTTER: LIBRERÍAS Y PERMISOS ============ -->
+  <section class="slide" data-title="Flutter: Librerías">
+    <div class="slide-inner">
+      <p class="kicker" data-anim style="--d:1">09 — Flutter / Dart</p>
+      <h2 data-anim style="--d:2">Librerías y <span class="accent">Permisos</span></h2>
+      <p class="lead narrow" data-anim style="--d:3">
+        Para usar NFC en Flutter se necesita un plugin que envuelva el Platform Channel hacia Android (NfcAdapter) e iOS (CoreNFC).
+      </p>
+      <div class="pkg-row" data-anim style="--d:4">
+        <div class="pkg pkg-main">
+          <span class="pkg-badge">Recomendado</span>
+          <strong class="pkg-name">nfc_manager</strong>
+          <code class="pkg-ver">^3.3.0</code>
+          <p>API unificada Android + iOS. Soporte NDEF, ISO-DEP, MiFare, FeliCa. Stream continuo. Mantenida activamente en pub.dev.</p>
+        </div>
+        <div class="pkg">
+          <span class="pkg-badge alt">Alternativa</span>
+          <strong class="pkg-name">flutter_nfc_kit</strong>
+          <code class="pkg-ver">^3.5.0</code>
+          <p>Mayor control de bajo nivel. Expone APDU raw commands y anticolisión directa. Ideal para tarjetas DESFire/MIFARE Classic.</p>
+        </div>
+        <div class="pkg">
+          <span class="pkg-badge alt">Alternativa</span>
+          <strong class="pkg-name">nfc_in_flutter</strong>
+          <code class="pkg-ver">^2.x</code>
+          <p>API simplificada basada en Stream. Solo lectura NDEF básica. Ideal para proyectos simples sin escritura ni APDU.</p>
+        </div>
+      </div>
+      <div class="perm-tabs" data-anim style="--d:5">
+        <div class="perm-tab-row">
+          <button class="perm-btn active" data-perm="android">Android</button>
+          <button class="perm-btn" data-perm="ios">iOS</button>
+        </div>
+        <div class="perm-panel active" data-perm-panel="android">
+          <div class="code-block" style="margin-top:.8rem">
+            <div class="code-head"><span class="dot"></span><span class="dot"></span><span class="dot"></span><em>AndroidManifest.xml + pubspec.yaml</em></div>
+<pre><code><span class="cm"># pubspec.yaml</span>
+<span class="fn">dependencies</span>:
+  <span class="kw">nfc_manager</span>: ^<span class="num">3.3.0</span>
+
+<span class="cm">&lt;!-- AndroidManifest.xml --&gt;</span>
+<span class="tag">&lt;uses-permission</span> <span class="atr">android:name=</span><span class="str">"android.permission.NFC"</span> <span class="tag">/&gt;</span>
+<span class="tag">&lt;uses-feature</span>    <span class="atr">android:name=</span><span class="str">"android.hardware.nfc"</span>
+                 <span class="atr">android:required=</span><span class="str">"true"</span> <span class="tag">/&gt;</span>
+<span class="cm">&lt;!-- En la &lt;activity&gt; para captura foreground --&gt;</span>
+<span class="tag">&lt;intent-filter&gt;</span>
+  <span class="tag">&lt;action</span> <span class="atr">android:name=</span><span class="str">"android.nfc.action.NDEF_DISCOVERED"</span><span class="tag">/&gt;</span>
+  <span class="tag">&lt;action</span> <span class="atr">android:name=</span><span class="str">"android.nfc.action.TAG_DISCOVERED"</span><span class="tag">/&gt;</span>
+<span class="tag">&lt;/intent-filter&gt;</span>
+<span class="cm">&lt;!-- minSdkVersion recomendado: 19 (Android 4.4 KitKat) --&gt;</span></code></pre>
+          </div>
+        </div>
+        <div class="perm-panel" data-perm-panel="ios">
+          <div class="code-block" style="margin-top:.8rem">
+            <div class="code-head"><span class="dot"></span><span class="dot"></span><span class="dot"></span><em>Info.plist + App.entitlements</em></div>
+<pre><code><span class="cm">&lt;!-- ios/Runner/Info.plist --&gt;</span>
+<span class="tag">&lt;key&gt;</span>NFCReaderUsageDescription<span class="tag">&lt;/key&gt;</span>
+<span class="tag">&lt;string&gt;</span>Necesario para leer y escribir etiquetas NFC<span class="tag">&lt;/string&gt;</span>
+
+<span class="cm">&lt;!-- ios/Runner/Runner.entitlements --&gt;</span>
+<span class="tag">&lt;key&gt;</span>com.apple.developer.nfc.readersession.formats<span class="tag">&lt;/key&gt;</span>
+<span class="tag">&lt;array&gt;</span>
+  <span class="tag">&lt;string&gt;</span>NDEF<span class="tag">&lt;/string&gt;</span>   <span class="cm">&lt;!-- lectura/escritura NDEF --&gt;</span>
+  <span class="tag">&lt;string&gt;</span>TAG<span class="tag">&lt;/string&gt;</span>    <span class="cm">&lt;!-- acceso raw a ISO 14443 --&gt;</span>
+<span class="tag">&lt;/array&gt;</span>
+<span class="cm">&lt;!-- iOS 13+ NDEF read/write · iOS 11+ solo lectura · Xcode signing obligatorio --&gt;</span></code></pre>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ SLIDE 11 · ARQUITECTURA FLUTTER ============ -->
+  <section class="slide" data-title="Arquitectura Flutter">
+    <div class="slide-inner">
+      <p class="kicker" data-anim style="--d:1">10 — Arquitectura</p>
+      <h2 data-anim style="--d:2">Clean Architecture + <span class="accent">Platform Channel</span></h2>
+      <p class="lead narrow" data-anim style="--d:3">
+        La estructura recomendada separa responsabilidades en capas y utiliza un <code>Stream&lt;NfcTag&gt;</code> para reaccionar en tiempo real a cada tag detectado.
+      </p>
+      <div class="arch-wrapper" data-anim style="--d:4">
+        <div class="arch-diagram">
+          <div class="arch-main-col">
+            <div class="arch-layer al-pres">
+              <span class="al-title">Presentation Layer</span>
+              <span class="al-sub">Flutter Widgets · BLoC / Riverpod · StreamBuilder</span>
+            </div>
+            <div class="arch-arrow">↓ UseCase call &nbsp;|&nbsp; ↑ NfcState emitido</div>
+            <div class="arch-layer al-domain">
+              <span class="al-title">Domain Layer</span>
+              <span class="al-sub">ReadTagUseCase · WriteTagUseCase · NfcRepository (abstract)</span>
+            </div>
+            <div class="arch-arrow">↓ Stream&lt;NfcTag&gt; &nbsp;|&nbsp; ↑ NdefMessage</div>
+            <div class="arch-layer al-data">
+              <span class="al-title">Data Layer</span>
+              <span class="al-sub">NfcRepositoryImpl → NfcService (MethodChannel wrapper)</span>
+            </div>
+            <div class="arch-arrow">↓ startSession() &nbsp;|&nbsp; ↑ onDiscovered callback</div>
+            <div class="arch-layer al-plat">
+              <span class="al-title">Plugin: nfc_manager</span>
+              <span class="al-sub">NfcManager.instance · Platform Channel · dart:ffi</span>
+            </div>
+          </div>
+          <div class="arch-plat-col">
+            <div class="arch-layer al-android">
+              <span class="al-title">Android</span>
+              <span class="al-sub">NfcAdapter · enableForegroundDispatch · NdefMessage · IsoDep · MifareClassic</span>
+            </div>
+            <div class="arch-vs">VS</div>
+            <div class="arch-layer al-ios">
+              <span class="al-title">iOS</span>
+              <span class="al-sub">NFCNDEFReaderSession · NFCTagReaderSession · CoreNFC · Secure Element</span>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="callout" data-anim style="--d:5">
+        <strong>Patrón clave:</strong> el <code>Stream&lt;NfcTag&gt;</code> en el repositorio permite que el BLoC/Riverpod
+        reaccione en tiempo real a cada tag sin bloquear el UI thread.
+        <em>stopSession()</em> cancela el stream limpiamente en el <code>dispose()</code> del widget, evitando memory leaks.
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ SLIDE 12 · CÓDIGO FLUTTER/DART ============ -->
+  <section class="slide" data-title="Código Flutter/Dart">
+    <div class="slide-inner split">
+      <div class="split-text">
+        <p class="kicker" data-anim style="--d:1">11 — Código Flutter/Dart</p>
+        <h2 data-anim style="--d:2">NFC en <span class="accent">Dart</span></h2>
+        <p class="lead" data-anim style="--d:3">
+          Con <em>nfc_manager</em> el flujo completo — verificar, leer NDEF y escribir — se hace con pocas líneas idiomáticas.
+        </p>
+        <ol class="steps">
+          <li data-anim style="--d:4">
+            <span class="step-n">1</span>
+            <div><strong>Verificar hardware</strong><p><code>isAvailable()</code> consulta si el chip NFC existe y está activo. Retorna <code>bool</code> sin lanzar excepción.</p></div>
+          </li>
+          <li data-anim style="--d:5">
+            <span class="step-n">2</span>
+            <div><strong>Iniciar sesión</strong><p><code>startSession(onDiscovered:)</code> activa el campo RF. El callback recibe cada <code>NfcTag</code> detectada de forma asíncrona.</p></div>
+          </li>
+          <li data-anim style="--d:6">
+            <span class="step-n">3</span>
+            <div><strong>Procesar + cerrar</strong><p><code>Ndef.from(tag)</code> extrae la interfaz NDEF. Tras leer, llamar <code>stopSession()</code> desactiva el campo RF y libera recursos.</p></div>
+          </li>
+        </ol>
+      </div>
+      <div class="split-visual" data-anim style="--d:4">
+        <div class="code-block tall">
+          <div class="code-head"><span class="dot"></span><span class="dot"></span><span class="dot"></span><em>nfc_reader.dart</em></div>
+<pre><code><span class="cm">// 1. Verificar disponibilidad del hardware NFC</span>
+<span class="kw">final</span> isAvailable =
+    <span class="kw">await</span> NfcManager.instance.<span class="fn">isAvailable</span>();
+<span class="kw">if</span> (!isAvailable) {
+  <span class="fn">showError</span>(<span class="str">'NFC desactivado o no disponible'</span>);
+  <span class="kw">return</span>;
+}
+
+<span class="cm">// 2. Iniciar sesión — activa el campo RF</span>
+<span class="kw">await</span> NfcManager.instance.<span class="fn">startSession</span>(
+  <span class="fn">onDiscovered</span>: (NfcTag tag) <span class="kw">async</span> {
+
+<span class="cm">    // 3. Obtener interfaz NDEF del tag</span>
+    <span class="kw">final</span> ndef = Ndef.<span class="fn">from</span>(tag);
+    <span class="kw">if</span> (ndef == <span class="kw">null</span>) <span class="kw">return</span>;
+
+<span class="cm">    // 4. Leer mensaje y primer registro</span>
+    <span class="kw">final</span> msg = <span class="kw">await</span> ndef.<span class="fn">read</span>();
+    <span class="kw">final</span> payload = msg?.records.first.payload;
+<span class="cm">    // Saltar los 3 bytes de header NDEF (lang/flags)</span>
+    <span class="kw">final</span> texto =
+      String.<span class="fn">fromCharCodes</span>(payload!.<span class="fn">skip</span>(<span class="num">3</span>));
+
+<span class="cm">    // 5. Escritura NDEF (opcional)</span>
+    <span class="kw">final</span> newRecord = NdefRecord.<span class="fn">createUri</span>(
+      Uri.<span class="fn">parse</span>(<span class="str">'https://unicesar.edu.co'</span>));
+    <span class="kw">await</span> ndef.<span class="fn">write</span>(NdefMessage([newRecord]));
+
+<span class="cm">    // 6. Cerrar sesión limpiamente</span>
+    <span class="kw">await</span> NfcManager.instance.<span class="fn">stopSession</span>();
+    <span class="fn">mostrarEnPantalla</span>(texto);
+  },
+);</code></pre>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ SLIDE 13 · PERMISOS ============ -->
+  <section class="slide" data-title="Permisos">
+    <div class="slide-inner">
+      <p class="kicker" data-anim style="--d:1">12 — Permisos en Android nativo</p>
+      <h2 data-anim style="--d:2">Permisos y <span class="accent">declaraciones</span></h2>
+      <p class="lead narrow" data-anim style="--d:3">
+        El NFC es un permiso <strong>de instalación</strong>, no de ejecución: se declara
+        en el <code>AndroidManifest.xml</code> y no muestra diálogo emergente al usuario.
+      </p>
+      <div class="code-block" data-anim style="--d:4">
+        <div class="code-head"><span class="dot"></span><span class="dot"></span><span class="dot"></span><em>AndroidManifest.xml</em></div>
+<pre><code><span class="cm">&lt;!-- Solicita acceso al hardware NFC --&gt;</span>
+<span class="tag">&lt;uses-permission</span> <span class="atr">android:name=</span><span class="str">"android.permission.NFC"</span> <span class="tag">/&gt;</span>
+
+<span class="cm">&lt;!-- Exige que el dispositivo tenga chip NFC --&gt;</span>
+<span class="tag">&lt;uses-feature</span> <span class="atr">android:name=</span><span class="str">"android.hardware.nfc"</span>
+              <span class="atr">android:required=</span><span class="str">"true"</span> <span class="tag">/&gt;</span></code></pre>
+      </div>
+      <div class="card-grid c3">
+        <article class="card mini" data-anim style="--d:5">
+          <h3>Sin diálogo runtime</h3>
+          <p>No requiere <em>runtime permission</em>: el usuario lo acepta al instalar. Normal-level permission (sin firma especial).</p>
+        </article>
+        <article class="card mini" data-anim style="--d:6">
+          <h3>required="true"</h3>
+          <p>Filtra en Google Play los equipos sin NFC. Usa <code>false</code> si el NFC es opcional en tu app.</p>
+        </article>
+        <article class="card mini" data-anim style="--d:7">
+          <h3>Estado en runtime</h3>
+          <p>El usuario puede desactivar el NFC. Verificar con <code>NfcAdapter.isEnabled()</code> antes de cada sesión.</p>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ SLIDE 14 · EJEMPLO PRÁCTICO ============ -->
+  <section class="slide" data-title="Ejemplo práctico">
+    <div class="slide-inner">
+      <p class="kicker" data-anim style="--d:1">13 — Ejemplo práctico</p>
+      <h2 data-anim style="--d:2">Lectura <span class="accent">real</span> de una etiqueta</h2>
+      <p class="lead narrow" data-anim style="--d:3">
+        En un teléfono Android con Chrome este ejemplo usa la <strong>Web NFC API</strong>
+        y lee una etiqueta física real. En otros dispositivos se ejecuta una simulación.
+      </p>
+      <div class="sim" data-anim style="--d:4">
+        <div class="sim-stage">
+          <div class="sim-phone" id="simPhone">
+            <div class="phone-screen" id="phoneScreen">
+              <span class="phone-idle">Listo para escanear</span>
+            </div>
+          </div>
+          <div class="sim-waves" id="simWaves" aria-hidden="true">
+            <span></span><span></span><span></span>
+          </div>
+          <div class="sim-tag" id="simTag">
+            <svg viewBox="0 0 24 24" width="30" height="30" fill="none" stroke="currentColor" stroke-width="1.5">
+              <path d="M6 3a12 12 0 0 1 0 18M10 6a6 6 0 0 1 0 12"/>
+            </svg>
+            <span>Etiqueta NFC</span>
+          </div>
+        </div>
+        <div class="sim-console">
+          <div class="console-head">Consola de comunicación ISO 14443</div>
+          <div class="console-log" id="consoleLog">
+            <p class="log-empty">Pulsa el botón para iniciar la lectura…</p>
+          </div>
+          <div class="ndef-result" id="ndefResult" hidden></div>
+        </div>
+      </div>
+      <div class="sim-controls" data-anim style="--d:5">
+        <button class="btn primary" id="simRun">Leer etiqueta NFC ⚡</button>
+        <button class="btn ghost" id="simReset">Reiniciar</button>
+      </div>
+      <p class="sim-mode" id="simMode" data-anim style="--d:6">
+        <span class="dot-led"></span> Verificando soporte NFC del dispositivo…
+      </p>
+    </div>
+  </section>
+
+  <!-- ============ SLIDE 15 · PRUEBA NFC REAL ============ -->
+  <section class="slide" data-title="Prueba NFC Real">
+    <div class="slide-inner">
+      <p class="kicker" data-anim style="--d:1">14 — Laboratorio NFC</p>
+      <h2 data-anim style="--d:2">Prueba <span class="accent">NFC Real</span></h2>
+
+      <!-- Requisitos en tiempo real -->
+      <div class="req-bar" data-anim style="--d:3" id="reqBar">
+        <div class="req-pill" id="req-https">
+          <span class="req-ico">○</span><span>HTTPS</span>
+        </div>
+        <div class="req-pill" id="req-android">
+          <span class="req-ico">○</span><span>Android</span>
+        </div>
+        <div class="req-pill" id="req-chrome">
+          <span class="req-ico">○</span><span>Chrome</span>
+        </div>
+        <div class="req-pill" id="req-nfc">
+          <span class="req-ico">○</span><span>NDEFReader API</span>
+        </div>
+        <span class="req-status" id="reqStatus">Verificando…</span>
+      </div>
+
+      <!-- Tabs LEER / ESCRIBIR -->
+      <div class="nfc-lab" data-anim style="--d:4">
+        <div class="lab-tabs">
+          <button class="lab-tab active" data-lab="read">
+            <svg viewBox="0 0 20 20" width="14" height="14" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M3 5a10 10 0 0 1 0 10M6.5 7a5 5 0 0 1 0 6M10 9a1 1 0 0 1 0 2"/></svg>
+            Leer etiqueta
+          </button>
+          <button class="lab-tab" data-lab="write">
+            <svg viewBox="0 0 20 20" width="14" height="14" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M4 13L14 3l3 3L7 16H4v-3z"/></svg>
+            Escribir etiqueta
+          </button>
+        </div>
+
+        <!-- PANEL LEER -->
+        <div class="lab-panel active" id="labRead">
+          <div class="lab-read-grid">
+            <div class="lab-visual">
+              <div class="lab-phone" id="labPhone">
+                <div class="lab-screen" id="labScreen">
+                  <span class="lab-idle">Listo</span>
+                </div>
+              </div>
+              <div class="lab-waves" id="labWaves" aria-hidden="true">
+                <span></span><span></span><span></span>
+              </div>
+              <div class="lab-nfctag" id="labTag">
+                <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.5">
+                  <path d="M6 3a12 12 0 0 1 0 18M10 6a6 6 0 0 1 0 12M14 10a2 2 0 0 1 0 4"/>
+                </svg>
+                <span>Tag</span>
+              </div>
+            </div>
+
+            <div class="lab-output">
+              <div class="lab-console-head">
+                <span>Consola técnica ISO 14443</span>
+                <span class="lab-ts" id="labTs">—</span>
+              </div>
+              <div class="lab-log" id="labLog">
+                <p class="log-empty">Pulsa "Leer" y acerca una etiqueta NFC…</p>
+              </div>
+              <div class="lab-tech-result" id="labResult" hidden>
+                <div class="ltr-head">
+                  <span id="ltrUid" class="ltr-uid">—</span>
+                  <span id="ltrSize" class="ltr-size">—</span>
+                </div>
+                <div id="ltrRecords"></div>
+              </div>
+            </div>
+          </div>
+          <div class="lab-actions">
+            <button class="btn primary" id="labReadBtn">Iniciar lectura ⚡</button>
+            <button class="btn ghost"  id="labStopBtn" disabled>Detener</button>
+            <button class="btn ghost"  id="labClearBtn">Limpiar</button>
+          </div>
+        </div>
+
+        <!-- PANEL ESCRIBIR -->
+        <div class="lab-panel" id="labWrite">
+          <div class="lab-write-grid">
+            <div class="lab-write-form">
+              <label class="write-label">Tipo de contenido</label>
+              <div class="write-type-row">
+                <button class="wtype-btn active" data-wtype="url">URL</button>
+                <button class="wtype-btn" data-wtype="text">Texto</button>
+              </div>
+              <label class="write-label" style="margin-top:.8rem">Contenido a escribir</label>
+              <input class="write-input" id="writeContent"
+                type="url" placeholder="https://unicesar.edu.co"
+                value="https://unicesar.edu.co" />
+              <div class="write-meta">
+                <span id="writeByteCount">0 bytes</span>
+                <span id="writeTagCap">— capacidad</span>
+              </div>
+              <div class="write-actions">
+                <button class="btn primary" id="writeBtn">Escribir en etiqueta ✎</button>
+                <button class="btn ghost" id="writeClearBtn">Limpiar</button>
+              </div>
+            </div>
+            <div class="lab-write-status">
+              <div class="lab-console-head"><span>Estado escritura</span></div>
+              <div class="lab-log" id="writeLog">
+                <p class="log-empty">Configura el contenido y pulsa Escribir…</p>
+              </div>
+              <div class="write-result" id="writeResult" hidden>
+                <svg viewBox="0 0 24 24" width="28" height="28" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M20 6L9 17l-5-5"/></svg>
+                <span id="writeResultTxt">Escrito correctamente</span>
+              </div>
+            </div>
+          </div>
+          <p class="write-hint">
+            <svg viewBox="0 0 16 16" width="12" height="12" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="8" cy="8" r="6"/><path d="M8 7v5M8 5v.5"/></svg>
+            Requiere Android + Chrome + etiqueta NFC Type 2/4 grabable (NTAG213, NTAG215, DESFire…)
+          </p>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ============ SLIDE 16 · SEGURIDAD ============ -->
+  <section class="slide" data-title="Seguridad">
+    <div class="slide-inner">
+      <p class="kicker" data-anim style="--d:1">14 — Seguridad</p>
+      <h2 data-anim style="--d:2">¿Es <span class="accent">seguro</span>?</h2>
+      <p class="lead narrow" data-anim style="--d:3">
+        El corto alcance es su primera defensa, pero no la única a considerar.
+      </p>
+      <div class="card-grid c2">
+        <article class="card pro" data-anim style="--d:4">
+          <span class="tagline ok">A favor</span>
+          <h3>Proximidad obligatoria</h3>
+          <p>Interceptar exige estar a centímetros. El usuario debe acercar el equipo de forma deliberada — no hay escucha pasiva posible a distancia.</p>
+        </article>
+        <article class="card pro" data-anim style="--d:5">
+          <span class="tagline ok">A favor</span>
+          <h3>Capas cifradas</h3>
+          <p>Pagos y accesos usan tokens efímeros y cifrado AES-128 sobre NFC (PACE/BAC). El número real de la tarjeta nunca viaja en claro.</p>
+        </article>
+        <article class="card pro" data-anim style="--d:6">
+          <span class="tagline warn">Riesgo</span>
+          <h3>Etiquetas maliciosas</h3>
+          <p>Una etiqueta puede contener una URL falsa o un payload con código de exploit. La app siempre debe validar y sanitizar el contenido leído.</p>
+        </article>
+        <article class="card pro" data-anim style="--d:7">
+          <span class="tagline warn">Riesgo</span>
+          <h3>Relay / escaneo oculto</h3>
+          <p>Ataques relay amplifican el campo. Buenas prácticas: confirmar acciones críticas, bloquear etiquetas en solo lectura y exigir desbloqueo del equipo.</p>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ SLIDE 16 · CASOS DE USO ============ -->
+  <section class="slide" data-title="Casos de uso">
+    <div class="slide-inner">
+      <p class="kicker" data-anim style="--d:1">15 — Aplicaciones</p>
+      <h2 data-anim style="--d:2">El NFC en la <span class="accent">vida real</span></h2>
+      <div class="usecases">
+        <div class="uc" data-anim style="--d:3">
+          <svg class="uc-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="2" y="5" width="20" height="14" rx="2"/><line x1="2" y1="10" x2="22" y2="10"/></svg>
+          <h3>Pagos sin contacto</h3><p>Google Pay, Apple Pay, transporte público. Token efímero + AES-128.</p>
+        </div>
+        <div class="uc" data-anim style="--d:4">
+          <svg class="uc-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M21 2l-2 2m-7.61 7.61a5.5 5.5 0 1 1-7.778 7.778 5.5 5.5 0 0 1 7.777-7.777zm0 0L15.5 7.5m0 0l3 3L22 7l-3-3m-3.5 3.5L19 4"/></svg>
+          <h3>Control de acceso</h3><p>Tarjetas MIFARE DESFire en oficinas, hoteles, llaves digitales del auto.</p>
+        </div>
+        <div class="uc" data-anim style="--d:5">
+          <svg class="uc-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="M8 9h8M8 13h5"/></svg>
+          <h3>Identificación</h3><p>DNI, pasaportes ICAO 9303, carnés universitarios con chip BAC/PACE.</p>
+        </div>
+        <div class="uc" data-anim style="--d:6">
+          <svg class="uc-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M8.5 14.5A2.5 2.5 0 0011 12V6.5"/><path d="M5 3a14 14 0 010 18M9 6a8 8 0 010 12"/></svg>
+          <h3>Emparejamiento</h3><p>Un toque para conectar audífonos o parlantes Bluetooth/Wi-Fi vía Android Beam / SNEP.</p>
+        </div>
+        <div class="uc" data-anim style="--d:7">
+          <svg class="uc-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M20.59 13.41l-7.17 7.17a2 2 0 01-2.83 0L2 12V2h10l8.59 8.59a2 2 0 010 2.82z"/><line x1="7" y1="7" x2="7.01" y2="7"/></svg>
+          <h3>Posters inteligentes</h3><p>Etiquetas NDEF tipo SmartPoster que abren webs, menús digitales o descuentos.</p>
+        </div>
+        <div class="uc" data-anim style="--d:8">
+          <svg class="uc-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg>
+          <h3>Salud y trazabilidad</h3><p>Pulseras de pacientes, inventario médico RFID+NFC, cadena de frío farmacéutica.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ SLIDE 17 · CIERRE ============ -->
+  <section class="slide closing" data-title="Cierre">
+    <div class="cover-aura small" aria-hidden="true">
+      <span class="ring r1"></span><span class="ring r2"></span><span class="ring r3"></span>
+    </div>
+    <div class="slide-inner center">
+      <p class="kicker" data-anim style="--d:1">Conclusión</p>
+      <h2 class="big" data-anim style="--d:2">Un campo invisible,<br><span class="accent">un toque visible</span></h2>
+      <p class="lead narrow" data-anim style="--d:3">
+        El NFC convierte décadas de física electromagnética y normativa ISO en una experiencia
+        tan simple como acercar dos objetos. Detrás del "tap" hay inducción, ASK, ISO 14443,
+        anticolisión, NDEF y una arquitectura de software limpia y predecible en Flutter.
+      </p>
+      <p class="thanks" data-anim style="--d:4">Gracias por su atención</p>
+      <p class="signature" data-anim style="--d:5">
+        Programación Móvil · Prof. Ronald Alexander Vacca Ascanio<br>
+        Universidad Popular del Cesar
+      </p>
+    </div>
+  </section>
+
+</main>
+
+<nav class="controls" aria-label="Navegación de la presentación">
+  <button class="nav-btn" id="prevBtn" aria-label="Diapositiva anterior">←</button>
+  <div class="dots" id="dots"></div>
+  <button class="nav-btn" id="nextBtn" aria-label="Diapositiva siguiente">→</button>
+</nav>
+
+<div class="counter"><span id="curSlide">1</span><i>/</i><span id="totSlide">18</span></div>
+
+<script src="js/script.js"></script>
+</body>
+</html>
