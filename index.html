@@ -273,86 +273,7 @@
     </div>
   </section>
 
-  <!-- ============ SLIDE 6 · COMPONENTES ============ -->
-  <section class="slide" data-title="Componentes">
-    <div class="slide-inner">
-      <p class="kicker" data-anim style="--d:1">05 — Anatomía</p>
-      <h2 data-anim style="--d:2">¿Qué hay <span class="accent">dentro</span>?</h2>
-      <p class="lead narrow" data-anim style="--d:3">
-        Una etiqueta NFC es asombrosamente simple: solo dos piezas y ninguna batería.
-      </p>
-      <div class="card-grid c2">
-        <article class="card" data-anim style="--d:4">
-          <span class="card-icon">⌾</span>
-          <h3>Antena de bobina</h3>
-          <p>Un fino hilo de cobre o aluminio enrollado en espiral (tipicamente 3–6 vueltas). Capta el campo del lector, lo convierte en energía y actúa como canal de comunicación bidireccional.</p>
-        </article>
-        <article class="card" data-anim style="--d:5">
-          <span class="card-icon">▣</span>
-          <h3>Microchip (IC)</h3>
-          <p>Almacena los datos en EEPROM (96 B–32 KB según tipo), gestiona el protocolo y ejecuta la lógica de anticolisión. En etiquetas pasivas toda su energía proviene de la inducción.</p>
-        </article>
-      </div>
-      <div class="callout" data-anim style="--d:6">
-        <strong>Pasivo vs. Activo.</strong> La <em>etiqueta</em> (tarjeta, sticker, implante) es pasiva: sin fuente propia.
-        El <em>teléfono</em> es activo: alimenta al lector NFC y — cuando hace falta — energiza a la etiqueta por inducción.
-        El teléfono siempre inicia la comunicación y controla el campo RF.
-      </div>
-    </div>
-  </section>
-
-  <!-- ============ SLIDE 7 · MODOS DE OPERACIÓN ============ -->
-  <section class="slide" data-title="Modos de operación">
-    <div class="slide-inner">
-      <p class="kicker" data-anim style="--d:1">06 — Modos de operación</p>
-      <h2 data-anim style="--d:2">Tres formas de <span class="accent">usar</span> el NFC</h2>
-      <p class="lead narrow" data-anim style="--d:3">Haz clic en cada modo para ver cómo se comporta el dispositivo.</p>
-      <div class="modes" data-anim style="--d:4">
-        <div class="mode-tabs">
-          <button class="mode-tab active" data-mode="0">Lectura / Escritura</button>
-          <button class="mode-tab" data-mode="1">Peer-to-Peer</button>
-          <button class="mode-tab" data-mode="2">Emulación de tarjeta</button>
-        </div>
-        <div class="mode-stage">
-          <div class="mode-panel active" data-panel="0">
-            <div class="mode-diagram">
-              <span class="node phone">📱</span>
-              <span class="link"><i></i><i></i><i></i></span>
-              <span class="node tag">🏷️</span>
-            </div>
-            <div class="mode-info">
-              <h3>Lectura / Escritura</h3>
-              <p>El teléfono actúa como lector PCD (Proximity Coupling Device) y la etiqueta como PICC (Proximity Integrated Circuit Card). Lee o graba datos en tags pasivos. Caso más común: posters inteligentes, tarjetas de información, inventario.</p>
-            </div>
-          </div>
-          <div class="mode-panel" data-panel="1">
-            <div class="mode-diagram">
-              <span class="node phone">📱</span>
-              <span class="link two"><i></i><i></i><i></i></span>
-              <span class="node phone">📱</span>
-            </div>
-            <div class="mode-info">
-              <h3>Peer-to-Peer (P2P / NFCIP-1)</h3>
-              <p>Dos dispositivos activos intercambian datos bajo ISO 18092. El protocolo LLCP (Logical Link Control) proporciona control de flujo. Usado para intercambiar contactos, URLs, o iniciar emparejamiento Bluetooth/Wi-Fi.</p>
-            </div>
-          </div>
-          <div class="mode-panel" data-panel="2">
-            <div class="mode-diagram">
-              <span class="node tag">📱</span>
-              <span class="link"><i></i><i></i><i></i></span>
-              <span class="node phone">🖥️</span>
-            </div>
-            <div class="mode-info">
-              <h3>Emulación de tarjeta (HCE)</h3>
-              <p>El teléfono simula ser una tarjeta sin contacto ante un terminal externo. <em>Host Card Emulation</em> (Android 4.4+) gestiona los APDU commands en software. El Secure Element (SE) se usa para mayor seguridad en pagos.</p>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <!-- ============ SLIDE 8 · NDEF BÁSICO ============ -->
+  <!-- ============ SLIDE 6 · NDEF BÁSICO ============ -->
   <section class="slide" data-title="Formato NDEF">
     <div class="slide-inner split">
       <div class="split-text">
@@ -385,7 +306,7 @@
     </div>
   </section>
 
-  <!-- ============ SLIDE 9 · NDEF PROFUNDO ============ -->
+  <!-- ============ SLIDE 7 · NDEF PROFUNDO ============ -->
   <section class="slide" data-title="NDEF profundo">
     <div class="slide-inner split">
       <div class="split-text">
@@ -481,6 +402,85 @@
             <span class="ug-code">0x04</span><span>https://</span>
             <span class="ug-code">0x05</span><span>tel:</span>
             <span class="ug-code">0x06</span><span>mailto:</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ SLIDE 8 · COMPONENTES ============ -->
+  <section class="slide" data-title="Componentes">
+    <div class="slide-inner">
+      <p class="kicker" data-anim style="--d:1">07 — Anatomía</p>
+      <h2 data-anim style="--d:2">¿Qué hay <span class="accent">dentro</span>?</h2>
+      <p class="lead narrow" data-anim style="--d:3">
+        Una etiqueta NFC es asombrosamente simple: solo dos piezas y ninguna batería.
+      </p>
+      <div class="card-grid c2">
+        <article class="card" data-anim style="--d:4">
+          <span class="card-icon">⌾</span>
+          <h3>Antena de bobina</h3>
+          <p>Un fino hilo de cobre o aluminio enrollado en espiral (tipicamente 3–6 vueltas). Capta el campo del lector, lo convierte en energía y actúa como canal de comunicación bidireccional.</p>
+        </article>
+        <article class="card" data-anim style="--d:5">
+          <span class="card-icon">▣</span>
+          <h3>Microchip (IC)</h3>
+          <p>Almacena los datos en EEPROM (96 B–32 KB según tipo), gestiona el protocolo y ejecuta la lógica de anticolisión. En etiquetas pasivas toda su energía proviene de la inducción.</p>
+        </article>
+      </div>
+      <div class="callout" data-anim style="--d:6">
+        <strong>Pasivo vs. Activo.</strong> La <em>etiqueta</em> (tarjeta, sticker, implante) es pasiva: sin fuente propia.
+        El <em>teléfono</em> es activo: alimenta al lector NFC y — cuando hace falta — energiza a la etiqueta por inducción.
+        El teléfono siempre inicia la comunicación y controla el campo RF.
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ SLIDE 9 · MODOS DE OPERACIÓN ============ -->
+  <section class="slide" data-title="Modos de operación">
+    <div class="slide-inner">
+      <p class="kicker" data-anim style="--d:1">08 — Modos de operación</p>
+      <h2 data-anim style="--d:2">Tres formas de <span class="accent">usar</span> el NFC</h2>
+      <p class="lead narrow" data-anim style="--d:3">Haz clic en cada modo para ver cómo se comporta el dispositivo.</p>
+      <div class="modes" data-anim style="--d:4">
+        <div class="mode-tabs">
+          <button class="mode-tab active" data-mode="0">Lectura / Escritura</button>
+          <button class="mode-tab" data-mode="1">Peer-to-Peer</button>
+          <button class="mode-tab" data-mode="2">Emulación de tarjeta</button>
+        </div>
+        <div class="mode-stage">
+          <div class="mode-panel active" data-panel="0">
+            <div class="mode-diagram">
+              <span class="node phone">📱</span>
+              <span class="link"><i></i><i></i><i></i></span>
+              <span class="node tag">🏷️</span>
+            </div>
+            <div class="mode-info">
+              <h3>Lectura / Escritura</h3>
+              <p>El teléfono actúa como lector PCD (Proximity Coupling Device) y la etiqueta como PICC (Proximity Integrated Circuit Card). Lee o graba datos en tags pasivos. Caso más común: posters inteligentes, tarjetas de información, inventario.</p>
+            </div>
+          </div>
+          <div class="mode-panel" data-panel="1">
+            <div class="mode-diagram">
+              <span class="node phone">📱</span>
+              <span class="link two"><i></i><i></i><i></i></span>
+              <span class="node phone">📱</span>
+            </div>
+            <div class="mode-info">
+              <h3>Peer-to-Peer (P2P / NFCIP-1)</h3>
+              <p>Dos dispositivos activos intercambian datos bajo ISO 18092. El protocolo LLCP (Logical Link Control) proporciona control de flujo. Usado para intercambiar contactos, URLs, o iniciar emparejamiento Bluetooth/Wi-Fi.</p>
+            </div>
+          </div>
+          <div class="mode-panel" data-panel="2">
+            <div class="mode-diagram">
+              <span class="node tag">📱</span>
+              <span class="link"><i></i><i></i><i></i></span>
+              <span class="node phone">🖥️</span>
+            </div>
+            <div class="mode-info">
+              <h3>Emulación de tarjeta (HCE)</h3>
+              <p>El teléfono simula ser una tarjeta sin contacto ante un terminal externo. <em>Host Card Emulation</em> (Android 4.4+) gestiona los APDU commands en software. El Secure Element (SE) se usa para mayor seguridad en pagos.</p>
+            </div>
           </div>
         </div>
       </div>
